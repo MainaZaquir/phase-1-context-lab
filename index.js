@@ -1,13 +1,67 @@
-/* Your Code Here */
+// Your code here
+// firstName, familyName, title, payRatePerHour
+let createEmployeeRecord = (record) =>{
+    return {
+        firstName: record[0],
+        familyName: record[1],
+        title: record[2],
+        payPerHour: record[3],
+        timeInEvents: [],
+        timeOutEvents: []
+    }
+}
 
-/*
- We're giving you this function. Take a look at it, you might see some usage
- that's new and different. That's because we're avoiding a well-known, but
- sneaky bug that we'll cover in the next few lessons!
+let createEmployeeRecords = function(records) {
+    return records.map((record)=>{
+        return createEmployeeRecord(record)
+    })
+}
 
- As a result, the lessons for this function will pass *and* it will be available
- for you to use if you need it!
- */
+let createTimeInEvent = function(employee, date){
+    let reg = /[\W]/g
+    let day = date.split(' ')[0]
+    let time = parseInt(date.split(' ')[1].replace(reg, ''))
+
+    employee.timeInEvents.push({
+        type: "TimeIn",
+        hour: time,
+        date: day
+    })
+
+    return employee
+}
+
+let createTimeOutEvent = function(employee, date){
+    let reg = /[\W]/g
+    let day = date.split(' ')[0]
+    let time = parseInt(date.split(' ')[1].replace(reg, ''))
+
+    employee.timeOutEvents.push({
+        type: "TimeOut",
+        hour: time,
+        date: day
+    })
+
+    return employee
+}
+
+let hoursWorkedOnDate = function(employee, day){
+    let timeIn = employee.timeInEvents.find(function(e){
+        return e.date === day
+    })
+
+    let timeOut = employee.timeOutEvents.find(function(e){
+        return e.date === day
+    })
+
+    return (timeOut.hour - timeIn.hour) / 100
+}
+
+let wagesEarnedOnDate = function(employee, day){
+    let wage = hoursWorkedOnDate(employee, day)
+        * employee.payPerHour
+    return parseFloat(wage.toString())
+}
 
 const allWagesFor = function () {
     const eligibleDates = this.timeInEvents.map(function (e) {
@@ -21,3 +75,14 @@ const allWagesFor = function () {
     return payable
 }
 
+let findEmployeeByFirstName = function(srcArray, firstName) {
+  return srcArray.find(function(rec){
+    return rec.firstName === firstName
+  })
+}
+
+let calculatePayroll = function(arrayOfEmployeeRecords){
+    return arrayOfEmployeeRecords.reduce(function(memo, rec){
+        return memo + allWagesFor(rec)
+    }, 0)
+}
